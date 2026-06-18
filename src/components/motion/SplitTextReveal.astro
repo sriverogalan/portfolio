@@ -1,0 +1,15 @@
+---
+import AnimatedHeading from "../atoms/AnimatedHeading.astro";
+
+type HeadingTag = "h1" | "h2" | "h3" | "p";
+
+interface Props {
+  text: string;
+  as?: HeadingTag;
+  class?: string;
+}
+
+const { text, as = "h2", class: className } = Astro.props as Props;
+---
+
+<AnimatedHeading text={text} as={as} class={className} split />

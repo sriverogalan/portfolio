@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+/* Self-hosted variable fonts (loaded via BaseLayout imports) */
+
+@theme {
+  /* Color system: light, neutral, single controlled accent */
+  --color-bg: #fafaf8;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f4f4f0;
+  --color-ink: #0a0a0a;
+  --color-ink-soft: #5c5c5c;
+  --color-ink-faint: #6b6b66;
+  --color-border: #e6e6e1;
+  --color-border-strong: #d8d8d2;
+  --color-accent: #2563eb;
+  --color-accent-soft: #dbe6ff;
+
+  /* Typography */
+  --font-display: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid display sizes */
+  --text-display: clamp(2.75rem, 7vw, 5.5rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.03em;
+
+  --text-headline: clamp(2rem, 4.5vw, 3.25rem);
+  --text-headline--line-height: 1.08;
+  --text-headline--letter-spacing: -0.02em;
+
+  --text-title: clamp(1.5rem, 2.5vw, 2rem);
+  --text-title--line-height: 1.15;
+  --text-title--letter-spacing: -0.015em;
+
+  /* Layout */
+  --spacing-section: clamp(5rem, 12vw, 9rem);
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+    --color-bg: #09090b;
+    --color-surface: #141416;
+    --color-surface-soft: #1d1d20;
+    --color-ink: #fafaf9;
+    --color-ink-soft: #a1a1aa;
+    --color-ink-faint: #71717a;
+    --color-border: #232326;
+    --color-border-strong: #2e2e33;
+    --color-accent: #3b82f6;
+    --color-accent-soft: #1d3557;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv01";
+    transition: background-color 0.5s var(--ease-out-soft),
+                color 0.5s var(--ease-out-soft);
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #ffffff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 75rem; /* 1200px */
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  .section-pad {
+    padding-block: var(--spacing-section);
+  }
+}
+
+/* Pre-animation states: applied only when motion is enabled (.motion on <html>).
+   No-JS and reduced-motion users never get these, so content stays visible. */
+.motion [data-reveal],
+.motion [data-hero-item] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.motion [data-split-word] {
+  transform: translateY(110%);
+}
+
+/* Header background once scrolled and smooth transition properties */
+[data-header] {
+  --header-scroll-progress: 0;
+  background-color: transparent;
+  backdrop-filter: saturate(180%) blur(0px);
+  -webkit-backdrop-filter: saturate(180%) blur(0px);
+  border-bottom-color: transparent;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0);
+  transition: box-shadow 0.3s var(--ease-out-soft),
+              background-color 0.5s var(--ease-out-soft),
+              backdrop-filter 0.5s var(--ease-out-soft),
+              border-bottom-color 0.5s var(--ease-out-soft);
+}
+
+[data-header].is-scrolled {
+  background-color: color-mix(in srgb, var(--color-bg) calc(var(--header-scroll-progress) * 90%), transparent);
+  backdrop-filter: saturate(180%) blur(calc(var(--header-scroll-progress) * 16px));
+  -webkit-backdrop-filter: saturate(180%) blur(calc(var(--header-scroll-progress) * 16px));
+  border-bottom-color: color-mix(in srgb, var(--color-border) calc(var(--header-scroll-progress) * 100%), transparent);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, calc(var(--header-scroll-progress) * 0.03));
+}
+
+/* Active nav link indicator */
+[data-nav-link] {
+  position: relative;
+}
+
+[data-nav-link]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease-out-soft);
+}
+
+[data-nav-link][data-active]::after {
+  transform: scaleX(1);
+}
+
+/* Hero section spotlight gradient background */
+#top {
+  background: radial-gradient(circle at 50% 45%, #ffffff 0%, var(--color-bg) 75%);
+  transition: background 0.5s var(--ease-out-soft);
+}
+
+html.dark #top {
+  background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--color-accent) 6%, var(--color-bg)) 0%, var(--color-bg) 75%);
+}
+
+/* Shimmer Button Effect */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: none;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn-shimmer::before {
+    animation: shimmer 6s infinite ease-in-out;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  15% {
+    left: 200%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+/* Active nav link */
+[data-nav-link][data-active] {
+  color: var(--color-ink);
+}
+
+/* Respect reduced motion: neutralize transitions/animations and reveal hidden elements */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal],
+  [data-hero-item],
+  [data-split-word] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

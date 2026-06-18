@@ -1,0 +1,33 @@
+---
+import { cn } from "../../utils/cn";
+
+type HeadingTag = "h1" | "h2" | "h3" | "p";
+
+interface Props {
+  text: string;
+  as?: HeadingTag;
+  class?: string;
+  /** Stagger reveal per word when animations are enabled. */
+  split?: boolean;
+}
+
+const { text, as: Tag = "h2", class: className, split = true }: Props = Astro.props;
+
+const words: string[] = text.split(" ");
+---
+
+{
+  split ? (
+    <Tag class:list={[cn(className)]} data-split-heading>
+      {words.map((word: string, i: number) => (
+        <span class="mr-[0.25em] inline-block overflow-hidden pb-[0.08em] align-top">
+          <span class="inline-block will-change-transform" data-split-word style={`--word-index:${i}`}>
+            {word}
+          </span>
+        </span>
+      ))}
+    </Tag>
+  ) : (
+    <Tag class:list={[cn(className)]}>{text}</Tag>
+  )
+}

@@ -1,0 +1,57 @@
+---
+import { site } from "../../data/site";
+import Button from "../atoms/Button.astro";
+import Icon from "../atoms/Icon.astro";
+import AnimatedHeading from "../atoms/AnimatedHeading.astro";
+import CTAGroup from "../molecules/CTAGroup.astro";
+import MagneticButton from "../molecules/MagneticButton.astro";
+import ScrollIndicator from "../molecules/ScrollIndicator.astro";
+import InteractiveGrid from "../motion/InteractiveGrid.astro";
+---
+
+<section id="top" class="relative flex min-h-svh flex-col justify-center overflow-hidden pt-24">
+  <InteractiveGrid />
+
+  <!-- Bottom fade gradient -->
+  <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-bg to-transparent pointer-events-none" aria-hidden="true"></div>
+
+  <div class="container-page flex flex-col gap-10">
+    <div class="flex max-w-4xl flex-col gap-7">
+      <div class="flex flex-col gap-4" data-hero-item>
+        <h1 class="font-display text-display text-balance bg-gradient-to-br from-ink via-ink to-ink-soft bg-clip-text pb-1 text-transparent">
+          {site.name}
+        </h1>
+      </div>
+
+      <AnimatedHeading
+        as="p"
+        text={site.tagline}
+        class="font-display text-headline max-w-2xl text-balance text-ink-soft"
+      />
+
+      <p class="max-w-2xl text-lg leading-relaxed text-ink-soft md:text-xl" data-hero-item>
+        6+ years turning business bottlenecks into products that ship.
+        Java &amp; Spring Boot at the core, product-minded full-stack throughout.
+      </p>
+
+      <div data-hero-item>
+        <CTAGroup>
+          <MagneticButton>
+            <Button href="#work" variant="primary" size="lg" class="btn-shimmer">
+              View work
+              <Icon name="arrow-right" size={18} class="transition-transform duration-300 group-hover:translate-x-1" />
+            </Button>
+          </MagneticButton>
+          <Button href={`mailto:${site.email}`} variant="secondary" size="lg">
+            Get in touch
+            <Icon name="mail" size={18} class="transition-transform duration-300 group-hover:scale-110" />
+          </Button>
+        </CTAGroup>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-page mt-16 hidden md:mt-24 md:block" data-hero-item>
+    <ScrollIndicator label="Selected work" href="#work" />
+  </div>
+</section>

@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HomeTemplate from "../components/templates/HomeTemplate.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout title={`${site.shortName} | ${site.role}`} description={site.description}>
+  <HomeTemplate />
+</BaseLayout>

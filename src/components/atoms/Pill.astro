@@ -1,0 +1,27 @@
+---
+import { cn } from "../../utils/cn";
+
+interface Props {
+  variant?: "default" | "muted";
+  class?: string;
+}
+
+const { variant = "default", class: className } = Astro.props;
+
+const variants = {
+  default: "bg-surface-soft text-ink-soft",
+  muted: "bg-bg text-ink-faint",
+};
+---
+
+<span
+  class:list={[
+    cn(
+      "inline-flex items-center rounded-md px-2.5 py-1 text-[0.8125rem] leading-snug tracking-normal",
+      variants[variant],
+      className,
+    ),
+  ]}
+>
+  <slot />
+</span>

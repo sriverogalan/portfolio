@@ -1,0 +1,71 @@
+---
+import type { Project } from "../../data/projects";
+import { cn } from "../../utils/cn";
+import ParallaxImage from "../motion/ParallaxImage.astro";
+
+interface Props {
+  project: Project;
+  variant?: "browser" | "clean";
+  class?: string;
+}
+
+const { project, variant = "browser", class: className } = Astro.props;
+const initials = project.title
+  .replace(/[^a-zA-Z0-9 ]/g, "")
+  .split(" ")
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((w) => w[0])
+  .join("")
+  .toUpperCase();
+---
+
+<div
+  class:list={[
+    cn(
+      "relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-border bg-surface-soft",
+      variant === "clean" && "rounded-2xl",
+      className,
+    ),
+  ]}
+>
+  {
+    project.visual === "screenshot" ? (
+      variant === "browser" ? (
+        <>
+          <div class="flex h-7 items-center gap-1.5 border-b border-border bg-surface px-3">
+            <span class="size-2 rounded-full bg-border-strong" />
+            <span class="size-2 rounded-full bg-border-strong" />
+            <span class="size-2 rounded-full bg-border-strong" />
+          </div>
+          <ParallaxImage
+            src={project.image ?? ""}
+            alt={`${project.title} interface preview`}
+            class="h-[calc(100%-1.75rem)] object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+          />
+        </>
+      ) : (
+        <ParallaxImage
+          src={project.image ?? ""}
+          alt={`${project.title} interface preview`}
+          class="h-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+        />
+      )
+    ) : (
+      <div class="project-mesh absolute inset-0 grid place-items-center">
+        <span class="font-display text-[clamp(3rem,8vw,6rem)] font-semibold tracking-tight text-ink/10">
+          {initials}
+        </span>
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .project-mesh {
+    background-image:
+      radial-gradient(60% 80% at 20% 10%, color-mix(in srgb, var(--color-accent) 16%, transparent), transparent),
+      radial-gradient(50% 60% at 90% 80%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent),
+      linear-gradient(160deg, var(--color-surface), var(--color-surface-soft));
+  }
+</style>

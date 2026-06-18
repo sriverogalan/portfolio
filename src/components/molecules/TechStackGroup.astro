@@ -1,0 +1,23 @@
+---
+import type { SkillGroup } from "../../data/skills";
+import Pill from "../atoms/Pill.astro";
+
+interface Props {
+  group: SkillGroup;
+}
+
+const { group } = Astro.props;
+---
+
+<div
+  class="flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 transition-colors duration-500 hover:border-border-strong"
+  data-reveal
+>
+  <div class="flex flex-col gap-1">
+    <h3 class="font-display text-lg font-medium tracking-tight text-ink">{group.area}</h3>
+    <p class="text-sm text-ink-faint">{group.caption}</p>
+  </div>
+  <ul class="flex flex-wrap gap-x-2 gap-y-2">
+    {group.skills.map((skill) => <li><Pill variant="muted">{skill}</Pill></li>)}
+  </ul>
+</div>

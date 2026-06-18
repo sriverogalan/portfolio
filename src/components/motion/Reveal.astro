@@ -1,0 +1,16 @@
+---
+import { cn } from "../../utils/cn";
+
+type Tag = "div" | "section" | "li" | "article" | "header" | "p";
+
+interface Props {
+  as?: Tag;
+  class?: string;
+}
+
+const { as: Element = "div", class: className }: Props = Astro.props;
+---
+
+<Element data-reveal class:list={[cn(className)]}>
+  <slot />
+</Element>

@@ -1,0 +1,20 @@
+---
+import { experience } from "../../data/experience";
+import SectionHeader from "../molecules/SectionHeader.astro";
+import ExperienceItem from "../molecules/ExperienceItem.astro";
+---
+
+<section id="experience" class="section-pad bg-surface/40" data-section-bg="soft">
+  <div class="container-page flex flex-col gap-14">
+    <SectionHeader
+      index="02"
+      label="Experience"
+      title="A track record of shipping."
+      description="Six years across aviation, logistics, ERP and freelance product work."
+    />
+
+    <ol class="flex flex-col">
+      {experience.map((item) => <ExperienceItem item={item} />)}
+    </ol>
+  </div>
+</section>

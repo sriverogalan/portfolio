@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/atoms/Button.astro";
+import Icon from "../components/atoms/Icon.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout title={`Not found | ${site.shortName}`} description="Page not found.">
+  <main class="grid min-h-svh place-items-center">
+    <div class="container-page flex flex-col items-center gap-6 text-center">
+      <p class="font-display text-display text-ink">404</p>
+      <p class="max-w-md text-lg text-ink-soft">This page wandered off. Let's get you back.</p>
+      <Button href="/" variant="primary" size="lg">
+        Back home
+        <Icon name="arrow-right" size={18} />
+      </Button>
+    </div>
+  </main>
+</BaseLayout>

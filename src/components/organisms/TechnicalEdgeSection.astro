@@ -1,0 +1,20 @@
+---
+import { skillGroups } from "../../data/skills";
+import SectionHeader from "../molecules/SectionHeader.astro";
+import TechStackGroup from "../molecules/TechStackGroup.astro";
+---
+
+<section id="stack" class="section-pad" data-section-bg="default">
+  <div class="container-page flex flex-col gap-14">
+    <SectionHeader
+      index="03"
+      label="Technical edge"
+      title="The stack behind the work."
+      description="Depth in backend and architecture, breadth across the product surface."
+    />
+
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {skillGroups.map((group) => <TechStackGroup group={group} />)}
+    </div>
+  </div>
+</section>

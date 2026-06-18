@@ -1,0 +1,32 @@
+---
+import type { Experience } from "../../data/experience";
+import Pill from "../atoms/Pill.astro";
+
+interface Props {
+  item: Experience;
+}
+
+const { item } = Astro.props;
+---
+
+<li
+  class="grid gap-4 border-t border-border py-8 md:grid-cols-[11rem_1fr] md:gap-12 lg:grid-cols-[13rem_1fr]"
+  data-reveal
+>
+  <div class="flex flex-col gap-1.5">
+    <p class="text-sm font-medium tabular-nums text-ink">{item.period}</p>
+    {item.location && <p class="text-sm text-ink-faint">{item.location}</p>}
+    {item.current && <p class="text-xs font-medium uppercase tracking-[0.16em] text-accent">Current</p>}
+  </div>
+
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-0.5">
+      <h3 class="font-display text-title text-ink">{item.company}</h3>
+      <p class="text-base text-ink-soft">{item.role}</p>
+    </div>
+    <p class="max-w-2xl text-base leading-relaxed text-ink-soft">{item.summary}</p>
+    <ul class="flex flex-wrap gap-x-2 gap-y-2 pt-1">
+      {item.areas.map((area) => <li><Pill variant="muted">{area}</Pill></li>)}
+    </ul>
+  </div>
+</li>

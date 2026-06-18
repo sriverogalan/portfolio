@@ -1,0 +1,37 @@
+---
+import { cn } from "../../utils/cn";
+import Icon from "./Icon.astro";
+import type { IconName } from "../../data/links";
+
+interface Props {
+  href: string;
+  external?: boolean;
+  icon?: IconName;
+  class?: string;
+}
+
+const { href, external = false, icon, class: className } = Astro.props;
+
+const rel = external ? "noopener noreferrer" : undefined;
+const target = external ? "_blank" : undefined;
+---
+
+<a
+  href={href}
+  rel={rel}
+  target={target}
+  class:list={[
+    cn(
+      "group inline-flex items-center gap-1.5 text-ink transition-colors duration-300 hover:text-accent",
+      className,
+    ),
+  ]}
+>
+  <span
+    class="bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:bg-[length:100%_1px]"
+    style="background-image: linear-gradient(currentColor, currentColor);"
+  >
+    <slot />
+  </span>
+  {icon && <Icon name={icon} size={16} class="transition-transform duration-300 group-hover:translate-x-0.5" />}
+</a>

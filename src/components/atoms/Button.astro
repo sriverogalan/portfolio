@@ -1,0 +1,53 @@
+---
+import { cn } from "../../utils/cn";
+
+interface Props {
+  href?: string;
+  variant?: "primary" | "secondary";
+  size?: "md" | "lg";
+  external?: boolean;
+  download?: boolean;
+  class?: string;
+  id?: string;
+}
+
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  external = false,
+  download = false,
+  class: className,
+  id,
+} = Astro.props;
+
+const base =
+  "group inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-tight transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-2 focus-visible:outline-offset-2";
+
+const variants = {
+  primary: "bg-ink text-bg hover:bg-ink/85",
+  secondary: "border border-border-strong bg-surface text-ink hover:border-ink/40 hover:bg-surface-soft",
+};
+
+const sizes = {
+  md: "px-5 py-2.5 text-sm",
+  lg: "px-7 py-3.5 text-base",
+};
+
+const classes = cn(base, variants[variant], sizes[size], className);
+
+const rel = external ? "noopener noreferrer" : undefined;
+const target = external ? "_blank" : undefined;
+---
+
+{
+  href ? (
+    <a href={href} class={classes} id={id} rel={rel} target={target} download={download}>
+      <slot />
+    </a>
+  ) : (
+    <button type="button" class={classes} id={id}>
+      <slot />
+    </button>
+  )
+}

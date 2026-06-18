@@ -1,0 +1,19 @@
+---
+import { cn } from "../../utils/cn";
+
+interface Props {
+  index?: string;
+  class?: string;
+}
+
+const { index, class: className } = Astro.props;
+---
+
+<span
+  class:list={[
+    cn("inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-ink-faint", className),
+  ]}
+>
+  {index && <span class="text-accent">{index}</span>}
+  <slot />
+</span>

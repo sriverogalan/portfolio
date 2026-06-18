@@ -1,0 +1,27 @@
+---
+import { cn } from "../../utils/cn";
+
+interface Props {
+  variant?: "accent" | "neutral";
+  class?: string;
+}
+
+const { variant = "neutral", class: className } = Astro.props;
+
+const variants = {
+  accent: "text-accent",
+  neutral: "text-ink-faint",
+};
+---
+
+<span
+  class:list={[
+    cn(
+      "inline-flex items-center text-xs font-medium uppercase tracking-[0.16em]",
+      variants[variant],
+      className,
+    ),
+  ]}
+>
+  <slot />
+</span>

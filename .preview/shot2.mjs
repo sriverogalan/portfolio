@@ -1,0 +1,10 @@
+import { chromium } from "playwright";
+const b = await chromium.launch();
+const c = await b.newContext({ viewport:{width:1440,height:900}, reducedMotion:"reduce" });
+const p = await c.newPage();
+await p.goto("http://localhost:4322/", { waitUntil:"networkidle" });
+await p.waitForTimeout(500);
+const work = await p.$("#work");
+await work.screenshot({ path:".preview/work.png" });
+await b.close();
+console.log("ok");

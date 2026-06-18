@@ -1,0 +1,22 @@
+---
+import { cn } from "../../utils/cn";
+
+/**
+ * Subtle "pinning" without scroll-jacking: the aside sticks within the section
+ * on large screens while the main content scrolls past it.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={[cn("grid gap-10 lg:grid-cols-[320px_1fr]", className)]}>
+  <div class="lg:sticky lg:top-28 lg:self-start">
+    <slot name="aside" />
+  </div>
+  <div>
+    <slot />
+  </div>
+</div>

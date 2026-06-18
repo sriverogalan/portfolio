@@ -1,0 +1,355 @@
+---
+/**
+ * InteractiveGrid: Canvas 2D interactive dot field.
+ * Dots react to cursor proximity with scale, color shift, and connecting lines.
+ * Click sends a ripple pulse. Idle state has subtle organic floating.
+ * Respects prefers-reduced-motion.
+ */
+---
+
+<div class="interactive-grid-wrap" data-interactive-grid aria-hidden="true">
+  <canvas data-grid-canvas></canvas>
+</div>
+
+<style>
+  .interactive-grid-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: auto;
+    mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 90%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 90%);
+  }
+
+  .interactive-grid-wrap canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  function initInteractiveGrid(): void {
+    const canvas = document.querySelector<HTMLCanvasElement>(
+      "[data-grid-canvas]",
+    );
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    // --- Configuration ---
+    const CONFIG = {
+      dotSpacing: 38,
+      dotBaseRadius: 1.5,
+      dotMaxRadius: 4.5,
+      mouseRadius: 160,
+      lineMaxDist: 90,
+      lineOpacity: 0.12,
+      accentColor: { r: 37, g: 99, b: 235 },    // #2563eb
+      dotColor: { r: 195, g: 195, b: 188 },       // subtle warm gray
+      dotActiveColor: { r: 37, g: 99, b: 235 },
+      pulseSpeed: 4,
+      pulseMaxRadius: 350,
+      floatAmplitude: 3,
+      floatSpeed: 0.0008,
+    };
+
+    // --- State ---
+    interface Dot {
+      baseX: number;
+      baseY: number;
+      x: number;
+      y: number;
+      radius: number;
+      phase: number;
+      influence: number;
+    }
+
+    let dots: Dot[] = [];
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+
+    const mouse = { x: -1000, y: -1000, active: false };
+
+    interface Pulse {
+      x: number;
+      y: number;
+      radius: number;
+      opacity: number;
+    }
+    const pulses: Pulse[] = [];
+
+    // --- Setup dots ---
+    function createDots(): void {
+      dots = [];
+      const cols = Math.ceil(width / CONFIG.dotSpacing) + 2;
+      const rows = Math.ceil(height / CONFIG.dotSpacing) + 2;
+      const offsetX = (width - (cols - 1) * CONFIG.dotSpacing) / 2;
+      const offsetY = (height - (rows - 1) * CONFIG.dotSpacing) / 2;
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const x = offsetX + col * CONFIG.dotSpacing;
+          const y = offsetY + row * CONFIG.dotSpacing;
+          dots.push({
+            baseX: x,
+            baseY: y,
+            x,
+            y,
+            radius: CONFIG.dotBaseRadius,
+            phase: Math.random() * Math.PI * 2,
+            influence: 0,
+          });
+        }
+      }
+    }
+
+    // --- Resize ---
+    function resize(): void {
+      const wrap = canvas.parentElement;
+      if (!wrap) return;
+      dpr = Math.min(window.devicePixelRatio, 2);
+      width = wrap.clientWidth;
+      height = wrap.clientHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      createDots();
+    }
+
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+
+    // --- Mouse events ---
+    canvas.addEventListener(
+      "mousemove",
+      (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+        mouse.active = true;
+      },
+      { passive: true },
+    );
+
+    canvas.addEventListener(
+      "mouseleave",
+      () => {
+        mouse.active = false;
+        mouse.x = -1000;
+        mouse.y = -1000;
+      },
+      { passive: true },
+    );
+
+    // Touch support
+    canvas.addEventListener(
+      "touchmove",
+      (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        if (touch) {
+          mouse.x = touch.clientX - rect.left;
+          mouse.y = touch.clientY - rect.top;
+          mouse.active = true;
+        }
+      },
+      { passive: true },
+    );
+
+    canvas.addEventListener(
+      "touchend",
+      () => {
+        mouse.active = false;
+        mouse.x = -1000;
+        mouse.y = -1000;
+      },
+      { passive: true },
+    );
+
+    // Click pulse
+    canvas.addEventListener("click", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      pulses.push({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+        radius: 0,
+        opacity: 0.6,
+      });
+    });
+
+    // --- Lerp utility ---
+    function lerp(a: number, b: number, t: number): number {
+      return a + (b - a) * t;
+    }
+
+    // --- Draw ---
+    let animationId: number;
+    let time = 0;
+
+    function draw(): void {
+      animationId = requestAnimationFrame(draw);
+      time += 1;
+
+      ctx!.clearRect(0, 0, width, height);
+
+      const { accentColor, dotColor, dotActiveColor } = CONFIG;
+
+      // Update pulses
+      for (let i = pulses.length - 1; i >= 0; i--) {
+        const p = pulses[i];
+        p.radius += CONFIG.pulseSpeed;
+        p.opacity *= 0.985;
+
+        if (p.opacity < 0.01 || p.radius > CONFIG.pulseMaxRadius) {
+          pulses.splice(i, 1);
+          continue;
+        }
+
+        // Draw pulse ring
+        ctx!.beginPath();
+        ctx!.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx!.strokeStyle = `rgba(${accentColor.r}, ${accentColor.g}, ${accentColor.b}, ${p.opacity * 0.3})`;
+        ctx!.lineWidth = 1.5;
+        ctx!.stroke();
+      }
+
+      // Update dots
+      for (const dot of dots) {
+        // Floating motion
+        const floatX =
+          Math.sin(time * CONFIG.floatSpeed + dot.phase) *
+          CONFIG.floatAmplitude;
+        const floatY =
+          Math.cos(time * CONFIG.floatSpeed * 0.7 + dot.phase + 1) *
+          CONFIG.floatAmplitude;
+
+        dot.x = dot.baseX + floatX;
+        dot.y = dot.baseY + floatY;
+
+        // Mouse influence
+        const dx = mouse.x - dot.x;
+        const dy = mouse.y - dot.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const targetInfluence =
+          dist < CONFIG.mouseRadius
+            ? 1 - dist / CONFIG.mouseRadius
+            : 0;
+
+        dot.influence = lerp(dot.influence, targetInfluence, 0.1);
+
+        // Pulse influence
+        let pulseInfluence = 0;
+        for (const p of pulses) {
+          const pdx = p.x - dot.x;
+          const pdy = p.y - dot.y;
+          const pdist = Math.sqrt(pdx * pdx + pdy * pdy);
+          const ringDist = Math.abs(pdist - p.radius);
+          if (ringDist < 40) {
+            pulseInfluence = Math.max(
+              pulseInfluence,
+              (1 - ringDist / 40) * p.opacity,
+            );
+          }
+        }
+
+        const totalInfluence = Math.min(1, dot.influence + pulseInfluence);
+
+        // Radius
+        dot.radius = lerp(
+          CONFIG.dotBaseRadius,
+          CONFIG.dotMaxRadius,
+          totalInfluence,
+        );
+
+        // Slight push away from mouse
+        if (dot.influence > 0.01) {
+          const pushStrength = dot.influence * 6;
+          const angle = Math.atan2(dy, dx);
+          dot.x -= Math.cos(angle) * pushStrength;
+          dot.y -= Math.sin(angle) * pushStrength;
+        }
+
+        // Color interpolation
+        const r = Math.round(
+          lerp(dotColor.r, dotActiveColor.r, totalInfluence),
+        );
+        const g = Math.round(
+          lerp(dotColor.g, dotActiveColor.g, totalInfluence),
+        );
+        const b = Math.round(
+          lerp(dotColor.b, dotActiveColor.b, totalInfluence),
+        );
+        const alpha = lerp(0.35, 1, totalInfluence);
+
+        // Draw dot
+        ctx!.beginPath();
+        ctx!.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        ctx!.fill();
+      }
+
+      // Draw connecting lines between nearby influenced dots
+      for (let i = 0; i < dots.length; i++) {
+        const a = dots[i];
+        if (a.influence < 0.05) continue;
+
+        for (let j = i + 1; j < dots.length; j++) {
+          const b = dots[j];
+          if (b.influence < 0.05) continue;
+
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < CONFIG.lineMaxDist) {
+            const lineAlpha =
+              (1 - dist / CONFIG.lineMaxDist) *
+              Math.min(a.influence, b.influence) *
+              CONFIG.lineOpacity;
+
+            ctx!.beginPath();
+            ctx!.moveTo(a.x, a.y);
+            ctx!.lineTo(b.x, b.y);
+            ctx!.strokeStyle = `rgba(${accentColor.r}, ${accentColor.g}, ${accentColor.b}, ${lineAlpha})`;
+            ctx!.lineWidth = 0.75;
+            ctx!.stroke();
+          }
+        }
+      }
+    }
+
+    if (prefersReduced) {
+      // Single static frame with no animation
+      for (const dot of dots) {
+        ctx!.beginPath();
+        ctx!.arc(dot.x, dot.y, CONFIG.dotBaseRadius, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(${dotColor.r}, ${dotColor.g}, ${dotColor.b}, 0.3)`;
+        ctx!.fill();
+      }
+      return;
+    }
+
+    draw();
+
+    // Cleanup
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        cancelAnimationFrame(animationId);
+      },
+      { once: true },
+    );
+  }
+
+  initInteractiveGrid();
+</script>

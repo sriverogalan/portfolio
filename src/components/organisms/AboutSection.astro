@@ -1,0 +1,20 @@
+---
+import { site } from "../../data/site";
+import SectionLabel from "../atoms/SectionLabel.astro";
+---
+
+<section id="about" class="section-pad bg-surface/40" data-section-bg="soft">
+  <div class="container-page">
+    <div class="flex max-w-3xl flex-col gap-8">
+      <div data-reveal><SectionLabel index="04">About</SectionLabel></div>
+      <div class="flex flex-col gap-5">
+        <p class="font-display text-headline text-balance leading-tight text-ink" data-reveal>
+          {site.about[0]}
+        </p>
+        {site.about.slice(1).map((line) => (
+          <p class="max-w-2xl text-lg leading-relaxed text-ink-soft" data-reveal>{line}</p>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

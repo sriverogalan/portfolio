@@ -1,0 +1,21 @@
+---
+interface Props {
+  role: string;
+  company?: string;
+  year?: string;
+}
+
+const { role, company, year } = Astro.props;
+const parts = [role, company, year].filter(Boolean);
+---
+
+<dl class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-faint">
+  {
+    parts.map((part, i) => (
+      <>
+        {i > 0 && <span aria-hidden="true">·</span>}
+        <dd>{part}</dd>
+      </>
+    ))
+  }
+</dl>

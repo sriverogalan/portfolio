@@ -1,0 +1,56 @@
+---
+import { site } from "../../data/site";
+import { socialLinks } from "../../data/links";
+import SectionLabel from "../atoms/SectionLabel.astro";
+import SplitTextReveal from "../motion/SplitTextReveal.astro";
+import Button from "../atoms/Button.astro";
+import Icon from "../atoms/Icon.astro";
+import IconLink from "../atoms/IconLink.astro";
+import CTAGroup from "../molecules/CTAGroup.astro";
+import MagneticButton from "../molecules/MagneticButton.astro";
+
+const linkedInUrl = "https://linkedin.com/in/sergiriverogalan";
+---
+
+<section id="contact" class="section-pad" data-section-bg="default">
+  <div class="container-page">
+    <div class="flex flex-col items-center gap-8 text-center">
+      <div data-reveal><SectionLabel index="05">Contact</SectionLabel></div>
+
+      <SplitTextReveal
+        as="h2"
+        text="Let's build something worth shipping."
+        class="font-display text-display max-w-4xl text-balance text-ink"
+      />
+
+      <p class="max-w-xl text-lg leading-relaxed text-ink-soft" data-reveal>
+        Reach out by email or LinkedIn. Let's talk about what you're building.
+      </p>
+
+      <div data-reveal>
+        <CTAGroup class="justify-center">
+          <MagneticButton>
+            <Button href={`mailto:${site.email}`} variant="primary" size="lg">
+              {site.email}
+              <Icon name="arrow-up-right" size={18} />
+            </Button>
+          </MagneticButton>
+          <Button href={linkedInUrl} variant="secondary" size="lg" external>
+            LinkedIn
+            <Icon name="arrow-up-right" size={18} />
+          </Button>
+        </CTAGroup>
+      </div>
+
+      <ul class="flex items-center gap-3 pt-2" data-reveal>
+        {
+          socialLinks.map((link) => (
+            <li>
+              <IconLink href={link.url} label={link.label} icon={link.icon} external={link.external} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

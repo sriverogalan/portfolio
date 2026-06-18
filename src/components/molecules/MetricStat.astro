@@ -1,0 +1,21 @@
+---
+import type { Metric } from "../../data/metrics";
+
+interface Props {
+  metric: Metric;
+}
+
+const { metric } = Astro.props;
+const { value, prefix = "", suffix = "", label } = metric;
+---
+
+<div class="flex flex-col gap-2" data-reveal>
+  <p class="font-display text-headline tracking-tight text-ink">
+    <span
+      data-count
+      data-count-to={value}
+      data-count-prefix={prefix}
+      data-count-suffix={suffix}>{prefix}{value}{suffix}</span>
+  </p>
+  <p class="text-sm leading-snug text-ink-soft">{label}</p>
+</div>

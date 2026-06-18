@@ -1,0 +1,35 @@
+---
+import SectionLabel from "../atoms/SectionLabel.astro";
+import AnimatedHeading from "../atoms/AnimatedHeading.astro";
+import { cn } from "../../utils/cn";
+
+interface Props {
+  label: string;
+  index?: string;
+  title: string;
+  description?: string;
+  align?: "left" | "center";
+  class?: string;
+}
+
+const { label, index, title, description, align = "left", class: className } = Astro.props;
+---
+
+<header
+  class:list={[
+    cn(
+      "flex max-w-3xl flex-col gap-5",
+      align === "center" && "mx-auto items-center text-center",
+      className,
+    ),
+  ]}
+  data-reveal
+>
+  <SectionLabel index={index}>{label}</SectionLabel>
+      <AnimatedHeading
+        as="h2"
+        text={title}
+        class="font-display text-headline text-balance text-ink"
+      />
+  {description && <p class="max-w-xl text-base leading-relaxed text-ink-soft md:text-lg">{description}</p>}
+</header>

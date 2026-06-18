@@ -1,0 +1,15 @@
+---
+import { cn } from "../../utils/cn";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<span class:list={[cn("inline-flex", className)]} data-magnetic>
+  <span class="inline-flex will-change-transform" data-magnetic-target>
+    <slot />
+  </span>
+</span>

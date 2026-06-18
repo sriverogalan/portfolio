@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fafaf8"/>
+      <stop offset="1" stop-color="#eef2fb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1080" cy="120" r="320" fill="#2563eb" opacity="0.08"/>
+  <circle cx="120" cy="560" r="240" fill="#2563eb" opacity="0.06"/>
+
+  <text x="90" y="150" font-family="Geist, Inter, system-ui, sans-serif" font-size="26" font-weight="500" fill="#5c5c5c" letter-spacing="3">SERGI RIVERO / SOFTWARE ENGINEER</text>
+
+  <text x="86" y="290" font-family="Geist, Inter, system-ui, sans-serif" font-size="88" font-weight="600" fill="#0a0a0a" letter-spacing="-3">Products shipped,</text>
+  <text x="86" y="390" font-family="Geist, Inter, system-ui, sans-serif" font-size="88" font-weight="600" fill="#0a0a0a" letter-spacing="-3">end to end.</text>
+
+  <text x="90" y="470" font-family="Inter, system-ui, sans-serif" font-size="30" fill="#5c5c5c">Java / Spring Boot / product-minded full-stack</text>
+
+  <g font-family="Inter, system-ui, sans-serif" font-size="24" fill="#0a0a0a">
+    <rect x="90" y="520" width="200" height="52" rx="26" fill="#ffffff" stroke="#e6e6e1"/>
+    <text x="116" y="553">-95% load time</text>
+    <rect x="310" y="520" width="220" height="52" rx="26" fill="#ffffff" stroke="#e6e6e1"/>
+    <text x="336" y="553">+80% dev velocity</text>
+    <rect x="550" y="520" width="200" height="52" rx="26" fill="#ffffff" stroke="#e6e6e1"/>
+    <text x="576" y="553">+60% efficiency</text>
+  </g>
+</svg>

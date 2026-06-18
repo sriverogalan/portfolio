@@ -1,0 +1,39 @@
+---
+// Tabler outline icons, vendored into src/icons for reliable bundling.
+import github from "../../icons/brand-github.svg?raw";
+import linkedin from "../../icons/brand-linkedin.svg?raw";
+import mail from "../../icons/mail.svg?raw";
+import download from "../../icons/download.svg?raw";
+import arrowUpRight from "../../icons/arrow-up-right.svg?raw";
+import arrowRight from "../../icons/arrow-right.svg?raw";
+import external from "../../icons/external-link.svg?raw";
+import type { IconName } from "../../data/links";
+
+interface Props {
+  name: IconName;
+  size?: number;
+  class?: string;
+  "stroke-width"?: number;
+}
+
+const { name, size = 20, class: className, "stroke-width": strokeWidth = 1.75 } = Astro.props;
+
+const icons: Record<IconName, string> = {
+  github,
+  linkedin,
+  mail,
+  download,
+  "arrow-up-right": arrowUpRight,
+  "arrow-right": arrowRight,
+  external,
+};
+
+// Normalize the raw SVG: drop fixed dimensions and let CSS/props control size & stroke.
+const svg = icons[name]
+  .replace(/\swidth="[^"]*"/, "")
+  .replace(/\sheight="[^"]*"/, "")
+  .replace(/stroke-width="[^"]*"/, `stroke-width="${strokeWidth}"`)
+  .replace("<svg", `<svg width="${size}" height="${size}" aria-hidden="true" focusable="false"`);
+---
+
+<span class:list={["inline-flex shrink-0", className]} set:html={svg} />

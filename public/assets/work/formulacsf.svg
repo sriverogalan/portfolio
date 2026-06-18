@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="FormulaCSF preview placeholder">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef2fb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#g)"/>
+  <circle cx="240" cy="180" r="420" fill="#2563eb" opacity="0.08"/>
+  <circle cx="1420" cy="900" r="360" fill="#2563eb" opacity="0.06"/>
+  <text x="120" y="520" font-family="Geist, Inter, system-ui, sans-serif" font-size="120" font-weight="600" fill="#0a0a0a" letter-spacing="-4">FormulaCSF</text>
+  <text x="124" y="600" font-family="Inter, system-ui, sans-serif" font-size="40" fill="#5c5c5c">Online education · 500+ students</text>
+  <text x="124" y="900" font-family="Inter, system-ui, sans-serif" font-size="28" fill="#8a8a85" letter-spacing="6">PREVIEW</text>
+</svg>

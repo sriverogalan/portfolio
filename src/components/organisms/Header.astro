@@ -1,0 +1,357 @@
+---
+import { site } from "../../data/site";
+import Button from "../atoms/Button.astro";
+
+const navItems = [
+  { label: "Work", href: "#work" },
+  { label: "Experience", href: "#experience" },
+  { label: "Stack", href: "#stack" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
+];
+---
+
+<header
+  data-header
+  class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[background-color,backdrop-filter,border-color] duration-300"
+>
+  <div class="container-page relative z-20 flex h-16 items-center justify-between gap-6">
+    <a
+      href="#top"
+      class="group/logo font-display text-base font-semibold tracking-tight text-ink"
+      aria-label={`${site.name} Home`}
+    >
+      Sergi Rivero<span class="inline-block text-accent transition-transform duration-300 ease-out group-hover/logo:-translate-y-0.5 group-hover/logo:scale-125">.</span>
+    </a>
+
+    <nav aria-label="Primary" class="hidden md:block">
+      <ul class="flex items-center gap-8">
+        {
+          navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                data-nav-link
+                class="relative text-sm text-ink-soft transition-colors duration-300 hover:text-ink data-[active]:text-ink"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <Button href="#contact" variant="primary" size="md" class="hidden sm:inline-flex">
+        Get in touch
+      </Button>
+
+      <button
+        type="button"
+        data-mobile-menu-toggle
+        class="mobile-menu-toggle inline-flex size-10 items-center justify-center rounded-full border border-border bg-surface text-ink md:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label="Open menu"
+      >
+        <span data-menu-icon-open class="menu-icon-bar" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Fullscreen mobile overlay -->
+  <nav
+    id="mobile-nav"
+    data-mobile-nav
+    aria-label="Mobile"
+    class="mobile-overlay"
+    hidden
+  >
+    <div class="mobile-overlay-content container-page">
+      <ul class="mobile-nav-list">
+        {
+          navItems.map((item, i) => (
+            <li style={`--stagger: ${i}`}>
+              <a
+                href={item.href}
+                data-nav-link
+                data-mobile-nav-link
+                class="mobile-nav-link"
+              >
+                <span class="mobile-nav-link-text">{item.label}</span>
+                <svg class="mobile-nav-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mobile-nav-footer">
+        <Button href="#contact" variant="primary" size="lg" class="w-full justify-center" id="mobile-cta">
+          Get in touch
+        </Button>
+        <p class="mobile-nav-email">{site.email}</p>
+      </div>
+    </div>
+  </nav>
+
+  <div
+    aria-hidden="true"
+    data-scroll-progress
+    class="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-accent"
+  >
+  </div>
+</header>
+
+<style>
+  /* --- Animated hamburger --- */
+  .menu-icon-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 18px;
+  }
+
+  .menu-icon-bar span {
+    display: block;
+    height: 1.75px;
+    width: 100%;
+    background-color: currentColor;
+    border-radius: 2px;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.25s ease;
+    transform-origin: center;
+  }
+
+  [data-mobile-menu-toggle][aria-expanded="true"] .menu-icon-bar span:first-child {
+    transform: translateY(3.375px) rotate(45deg);
+  }
+
+  [data-mobile-menu-toggle][aria-expanded="true"] .menu-icon-bar span:last-child {
+    transform: translateY(-3.375px) rotate(-45deg);
+  }
+
+  /* Hide header borders, shadow and background when mobile menu is open */
+  [data-header]:has(.mobile-overlay[data-open]) {
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* --- Fullscreen overlay --- */
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 10;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    background-color: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0.4s;
+  }
+
+  .mobile-overlay::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-overlay[data-open] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .mobile-overlay-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding: 6rem 1.5rem 3rem;
+  }
+
+  .mobile-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    list-style: none;
+    padding: 0;
+    margin-top: auto;
+    margin-bottom: 2rem;
+  }
+
+  /* --- Nav links --- */
+  .mobile-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                color 0.3s ease;
+    transition-delay: calc(var(--stagger) * 0.06s);
+  }
+
+  .mobile-nav-link::after {
+    content: none !important; /* Disable desktop underline indicator */
+  }
+
+  .mobile-nav-link[data-active] {
+    color: var(--color-accent) !important;
+  }
+
+  .mobile-nav-list li:first-child .mobile-nav-link {
+    border-top: 1px solid var(--color-border);
+  }
+
+  [data-open] .mobile-nav-link {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .mobile-nav-link:hover,
+  .mobile-nav-link:focus-visible {
+    color: var(--color-accent);
+  }
+
+  .mobile-nav-link:hover .mobile-nav-link-text,
+  .mobile-nav-link:focus-visible .mobile-nav-link-text {
+    transform: translateX(8px);
+  }
+
+  .mobile-nav-link-text {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .mobile-nav-arrow {
+    opacity: 0.3;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .mobile-nav-link:hover .mobile-nav-arrow,
+  .mobile-nav-link:focus-visible .mobile-nav-arrow,
+  .mobile-nav-link[data-active] .mobile-nav-arrow {
+    opacity: 1;
+    transform: translate(2px, -2px);
+  }
+
+  /* --- Footer area --- */
+  .mobile-nav-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    margin-top: auto;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.35s,
+                opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+  }
+
+  [data-open] .mobile-nav-footer {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mobile-nav-email {
+    font-size: 0.8125rem;
+    color: var(--color-ink-faint);
+  }
+
+  @media (min-width: 768px) {
+    .mobile-overlay {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  function initMobileNav(): void {
+    const toggle = document.querySelector<HTMLButtonElement>("[data-mobile-menu-toggle]");
+    const nav = document.querySelector<HTMLElement>("[data-mobile-nav]");
+    const links = document.querySelectorAll<HTMLAnchorElement>("[data-mobile-nav-link]");
+    const cta = document.querySelector<HTMLAnchorElement>("#mobile-cta");
+
+    if (!toggle || !nav) return;
+
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+
+      if (open) {
+        nav.removeAttribute("hidden");
+        // Force reflow before adding data-open for CSS transitions
+        void nav.offsetHeight;
+        nav.setAttribute("data-open", "");
+      } else {
+        nav.removeAttribute("data-open");
+        // Wait for transition to finish, then hide
+        const onEnd = () => {
+          if (!nav.hasAttribute("data-open")) {
+            nav.setAttribute("hidden", "");
+          }
+          nav.removeEventListener("transitionend", onEnd);
+        };
+        nav.addEventListener("transitionend", onEnd);
+      }
+
+      document.body.classList.toggle("overflow-hidden", open);
+
+      // Prevent Lenis smooth scrolling when menu is open
+      if ((window as any).lenis) {
+        if (open) {
+          (window as any).lenis.stop();
+        } else {
+          (window as any).lenis.start();
+        }
+      }
+    };
+
+    toggle.addEventListener("click", () => {
+      const isOpen = toggle.getAttribute("aria-expanded") === "true";
+      setOpen(!isOpen);
+    });
+
+    links.forEach((link) => {
+      link.addEventListener("click", () => setOpen(false));
+    });
+
+    if (cta) {
+      cta.addEventListener("click", () => setOpen(false));
+    }
+
+    window.addEventListener("resize", () => {
+      if (window.matchMedia("(min-width: 768px)").matches) setOpen(false);
+    });
+
+    // Close on Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+
+  initMobileNav();
+</script>
