@@ -53,6 +53,32 @@ const schema = personSchema();
 
     <script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />
 
+    <!-- Apply theme before paint to prevent FOUT -->
+    <script is:inline>
+      (() => {
+        const theme = (() => {
+          if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+            return localStorage.getItem('theme');
+          }
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return 'dark';
+          }
+          return 'light';
+        })();
+        
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', '#09090b');
+        } else {
+          document.documentElement.classList.remove('dark');
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', '#fafaf8');
+        }
+        window.localStorage.setItem('theme', theme);
+      })();
+    </script>
+
     <!-- Apply pre-animation states before paint, only when motion is allowed -->
     <script is:inline>
       if (window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {

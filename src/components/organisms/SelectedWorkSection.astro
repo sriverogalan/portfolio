@@ -32,7 +32,7 @@ import ProjectCard from "../molecules/ProjectCard.astro";
             <p class="text-sm tabular-nums text-ink-faint">{otherProjects.length} projects</p>
           </div>
 
-          <div class="rounded-2xl border border-border bg-surface/50 px-4 md:px-6">
+          <div class="rounded-2xl border border-border bg-surface/50 overflow-hidden">
             {otherProjects.map((project) => (
               <ProjectCard project={project} compact />
             ))}

@@ -125,9 +125,9 @@ function initSectionBackgrounds(): void {
   if (!sections.length) return;
 
   const tones: Record<string, string> = {
-    default: "#fafaf8",
-    soft: "#f4f4f0",
-    surface: "#ffffff",
+    default: "var(--color-bg)",
+    soft: "var(--color-surface-soft)",
+    surface: "var(--color-surface)",
   };
 
   sections.forEach((section) => {

@@ -1,0 +1,13 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={["flex items-center select-none", className]}>
+  <span class="logo-text font-display text-base font-semibold tracking-tight text-ink transition-colors duration-300">
+    Sergi Rivero
+  </span>
+</div>

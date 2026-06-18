@@ -51,14 +51,32 @@
       mouseRadius: 160,
       lineMaxDist: 90,
       lineOpacity: 0.12,
-      accentColor: { r: 37, g: 99, b: 235 },    // #2563eb
-      dotColor: { r: 195, g: 195, b: 188 },       // subtle warm gray
-      dotActiveColor: { r: 37, g: 99, b: 235 },
       pulseSpeed: 4,
       pulseMaxRadius: 350,
       floatAmplitude: 3,
       floatSpeed: 0.0008,
     };
+
+    function getThemeColors() {
+      const isDark = document.documentElement.classList.contains("dark");
+      if (isDark) {
+        return {
+          accentColor: { r: 59, g: 130, b: 246 },      // #3b82f6
+          dotColor: { r: 63, g: 63, b: 70 },           // Zinc-700
+          dotActiveColor: { r: 59, g: 130, b: 246 },
+        };
+      }
+      return {
+        accentColor: { r: 37, g: 99, b: 235 },        // #2563eb
+        dotColor: { r: 195, g: 195, b: 188 },         // subtle warm gray
+        dotActiveColor: { r: 37, g: 99, b: 235 },
+      };
+    }
+
+    const initialColors = getThemeColors();
+    let currentAccent = { ...initialColors.accentColor };
+    let currentDotColor = { ...initialColors.dotColor };
+    let currentDotActive = { ...initialColors.dotActiveColor };
 
     // --- State ---
     interface Dot {
@@ -113,15 +131,15 @@
 
     // --- Resize ---
     function resize(): void {
-      const wrap = canvas.parentElement;
+      const wrap = canvas!.parentElement;
       if (!wrap) return;
       dpr = Math.min(window.devicePixelRatio, 2);
       width = wrap.clientWidth;
       height = wrap.clientHeight;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
+      canvas!.width = width * dpr;
+      canvas!.height = height * dpr;
+      canvas!.style.width = `${width}px`;
+      canvas!.style.height = `${height}px`;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
       createDots();
     }
@@ -202,7 +220,22 @@
 
       ctx!.clearRect(0, 0, width, height);
 
-      const { accentColor, dotColor, dotActiveColor } = CONFIG;
+      const targetColors = getThemeColors();
+      currentAccent.r = lerp(currentAccent.r, targetColors.accentColor.r, 0.08);
+      currentAccent.g = lerp(currentAccent.g, targetColors.accentColor.g, 0.08);
+      currentAccent.b = lerp(currentAccent.b, targetColors.accentColor.b, 0.08);
+
+      currentDotColor.r = lerp(currentDotColor.r, targetColors.dotColor.r, 0.08);
+      currentDotColor.g = lerp(currentDotColor.g, targetColors.dotColor.g, 0.08);
+      currentDotColor.b = lerp(currentDotColor.b, targetColors.dotColor.b, 0.08);
+
+      currentDotActive.r = lerp(currentDotActive.r, targetColors.dotActiveColor.r, 0.08);
+      currentDotActive.g = lerp(currentDotActive.g, targetColors.dotActiveColor.g, 0.08);
+      currentDotActive.b = lerp(currentDotActive.b, targetColors.dotActiveColor.b, 0.08);
+
+      const accentColor = currentAccent;
+      const dotColor = currentDotColor;
+      const dotActiveColor = currentDotActive;
 
       // Update pulses
       for (let i = pulses.length - 1; i >= 0; i--) {
@@ -329,13 +362,27 @@
     }
 
     if (prefersReduced) {
-      // Single static frame with no animation
-      for (const dot of dots) {
-        ctx!.beginPath();
-        ctx!.arc(dot.x, dot.y, CONFIG.dotBaseRadius, 0, Math.PI * 2);
-        ctx!.fillStyle = `rgba(${dotColor.r}, ${dotColor.g}, ${dotColor.b}, 0.3)`;
-        ctx!.fill();
-      }
+      const drawStatic = () => {
+        const activeColors = getThemeColors();
+        ctx!.clearRect(0, 0, width, height);
+        for (const dot of dots) {
+          ctx!.beginPath();
+          ctx!.arc(dot.x, dot.y, CONFIG.dotBaseRadius, 0, Math.PI * 2);
+          ctx!.fillStyle = `rgba(${activeColors.dotColor.r}, ${activeColors.dotColor.g}, ${activeColors.dotColor.b}, 0.35)`;
+          ctx!.fill();
+        }
+      };
+
+      drawStatic();
+      window.addEventListener("theme-change", drawStatic);
+
+      document.addEventListener(
+        "astro:before-swap",
+        () => {
+          window.removeEventListener("theme-change", drawStatic);
+        },
+        { once: true }
+      );
       return;
     }
 

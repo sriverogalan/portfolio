@@ -1,6 +1,8 @@
 ---
 import { site } from "../../data/site";
 import Button from "../atoms/Button.astro";
+import ThemeToggle from "../atoms/ThemeToggle.astro";
+import Logo from "../atoms/Logo.astro";
 
 const navItems = [
   { label: "Work", href: "#work" },
@@ -18,10 +20,10 @@ const navItems = [
   <div class="container-page relative z-20 flex h-16 items-center justify-between gap-6">
     <a
       href="#top"
-      class="group/logo font-display text-base font-semibold tracking-tight text-ink"
+      class="group/logo block"
       aria-label={`${site.name} Home`}
     >
-      Sergi Rivero<span class="inline-block text-accent transition-transform duration-300 ease-out group-hover/logo:-translate-y-0.5 group-hover/logo:scale-125">.</span>
+      <Logo />
     </a>
 
     <nav aria-label="Primary" class="hidden md:block">
@@ -43,6 +45,8 @@ const navItems = [
     </nav>
 
     <div class="flex items-center gap-2">
+      <ThemeToggle />
+
       <Button href="#contact" variant="primary" size="md" class="hidden sm:inline-flex">
         Get in touch
       </Button>
