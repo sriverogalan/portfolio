@@ -33,24 +33,40 @@ const initials = project.title
     project.visual === "screenshot" ? (
       variant === "browser" ? (
         <>
-          <div class="flex h-7 items-center gap-1.5 border-b border-border bg-surface px-3">
+          <div class="relative z-10 flex h-7 shrink-0 items-center gap-1.5 border-b border-border bg-surface px-3">
             <span class="size-2 rounded-full bg-border-strong" />
             <span class="size-2 rounded-full bg-border-strong" />
             <span class="size-2 rounded-full bg-border-strong" />
           </div>
+          <div class="absolute inset-x-0 bottom-0 top-7 overflow-hidden">
+            <ParallaxImage
+              src={project.image ?? ""}
+              alt={`${project.title} interface preview`}
+              class="absolute inset-0 h-[112%] w-full max-w-none object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+            />
+          </div>
+        </>
+      ) : (
+        <div class="absolute inset-0 overflow-hidden">
           <ParallaxImage
             src={project.image ?? ""}
             alt={`${project.title} interface preview`}
-            class="h-[calc(100%-1.75rem)] object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+            class="absolute inset-0 h-[112%] w-full max-w-none object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
           />
-        </>
-      ) : (
-        <ParallaxImage
-          src={project.image ?? ""}
-          alt={`${project.title} interface preview`}
-          class="h-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
-        />
+        </div>
       )
+    ) : project.visual === "icon" ? (
+      <div class="project-mesh absolute inset-0 grid place-items-center p-8">
+        <img
+          src={project.image ?? ""}
+          alt={`${project.title} icon`}
+          class="pointer-events-none size-[7.5rem] shrink-0 object-contain rounded-[22%] shadow-[0_16px_40px_-18px_rgba(10,10,10,0.35)] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+          width="120"
+          height="120"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     ) : (
       <div class="project-mesh absolute inset-0 grid place-items-center">
         <span class="font-display text-[clamp(3rem,8vw,6rem)] font-semibold tracking-tight text-ink/10">

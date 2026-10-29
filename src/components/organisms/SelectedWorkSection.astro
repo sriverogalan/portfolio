@@ -1,16 +1,21 @@
 ---
-import { featuredProjects, otherProjects } from "../../data/projects";
+import { getProjects } from "../../data/projects";
 import SectionHeader from "../molecules/SectionHeader.astro";
 import ProjectCard from "../molecules/ProjectCard.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const { featuredProjects, otherProjects } = getProjects(lang);
 ---
 
 <section id="work" class="section-pad" data-section-bg="default">
   <div class="container-page flex flex-col gap-14 md:gap-16">
     <SectionHeader
       index="01"
-      label="Selected work"
-      title="Products shipped, end to end."
-      description="From architecture to production. Platforms, internal tools and client products with measurable outcomes."
+      label={t("section.selectedWork.label")}
+      title={t("section.selectedWork.title")}
+      description={t("section.selectedWork.description")}
     />
 
     <div class="flex flex-col">
@@ -24,12 +29,12 @@ import ProjectCard from "../molecules/ProjectCard.astro";
         <div class="flex flex-col gap-8 border-t border-border pt-12 md:gap-10 md:pt-14">
           <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between" data-reveal>
             <div class="flex flex-col gap-2">
-              <p class="text-xs font-medium uppercase tracking-[0.2em] text-ink-faint">Also building</p>
+              <p class="text-xs font-medium uppercase tracking-[0.2em] text-ink-faint">{t("section.selectedWork.alsoBuilding")}</p>
               <p class="max-w-xl text-base text-ink-soft">
-                Side products and client work, shipped or in progress.
+                {t("section.selectedWork.alsoBuildingDesc")}
               </p>
             </div>
-            <p class="text-sm tabular-nums text-ink-faint">{otherProjects.length} projects</p>
+            <p class="text-sm tabular-nums text-ink-faint">{otherProjects.length} {t("section.selectedWork.projects")}</p>
           </div>
 
           <div class="rounded-2xl border border-border bg-surface/50 overflow-hidden">

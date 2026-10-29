@@ -1,16 +1,28 @@
 ---
-import { site } from "../../data/site";
+import { getSite } from "../../data/site";
 import Button from "../atoms/Button.astro";
 import ThemeToggle from "../atoms/ThemeToggle.astro";
 import Logo from "../atoms/Logo.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const site = getSite(lang);
+const t = useTranslations(lang);
 
 const navItems = [
-  { label: "Work", href: "#work" },
-  { label: "Experience", href: "#experience" },
-  { label: "Stack", href: "#stack" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: t("nav.work"), href: "#work" },
+  { label: t("nav.process"), href: "#process" },
+  { label: t("nav.experience"), href: "#experience" },
+  { label: t("nav.stack"), href: "#stack" },
+  { label: t("nav.about"), href: "#about" },
+  { label: t("nav.contact"), href: "#contact" },
 ];
+
+const targetLang = lang === "en" ? "es" : "en";
+const targetLangLabel = lang === "en" ? "ES" : "EN";
+// Generate equivalent URL for target language
+const pathname = Astro.url.pathname;
+const targetUrl = lang === "en" ? `/es/` : `/`;
 ---
 
 <header
@@ -20,14 +32,16 @@ const navItems = [
   <div class="container-page relative z-20 flex h-16 items-center justify-between gap-6">
     <a
       href="#top"
+      data-nav-link
+      data-nav-home
       class="group/logo block"
-      aria-label={`${site.name} Home`}
+      aria-label={`${site.name} · ${t("nav.home")}`}
     >
       <Logo />
     </a>
 
-    <nav aria-label="Primary" class="hidden md:block">
-      <ul class="flex items-center gap-8">
+    <nav aria-label={t("nav.primary")} class="hidden md:block">
+      <ul class="flex items-center gap-5 lg:gap-7">
         {
           navItems.map((item) => (
             <li>
@@ -45,19 +59,29 @@ const navItems = [
     </nav>
 
     <div class="flex items-center gap-2">
+      <a 
+        href={targetUrl}
+        class="inline-flex size-10 items-center justify-center rounded-full text-xs font-medium text-ink-soft hover:bg-surface-soft hover:text-ink transition-colors"
+        aria-label={t("nav.changeLanguage")}
+      >
+        {targetLangLabel}
+      </a>
+      
       <ThemeToggle />
 
       <Button href="#contact" variant="primary" size="md" class="hidden sm:inline-flex">
-        Get in touch
+        {t("hero.getInTouch")}
       </Button>
 
       <button
         type="button"
         data-mobile-menu-toggle
+        data-label-open={t("nav.openMenu")}
+        data-label-close={t("nav.closeMenu")}
         class="mobile-menu-toggle inline-flex size-10 items-center justify-center rounded-full border border-border bg-surface text-ink md:hidden"
         aria-expanded="false"
         aria-controls="mobile-nav"
-        aria-label="Open menu"
+        aria-label={t("nav.openMenu")}
       >
         <span data-menu-icon-open class="menu-icon-bar" aria-hidden="true">
           <span></span>
@@ -71,7 +95,7 @@ const navItems = [
   <nav
     id="mobile-nav"
     data-mobile-nav
-    aria-label="Mobile"
+    aria-label={t("nav.mobile")}
     class="mobile-overlay"
     hidden
   >
@@ -98,7 +122,7 @@ const navItems = [
 
       <div class="mobile-nav-footer">
         <Button href="#contact" variant="primary" size="lg" class="w-full justify-center" id="mobile-cta">
-          Get in touch
+          {t("hero.getInTouch")}
         </Button>
         <p class="mobile-nav-email">{site.email}</p>
       </div>
@@ -300,7 +324,9 @@ const navItems = [
 
     const setOpen = (open: boolean) => {
       toggle.setAttribute("aria-expanded", String(open));
-      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      const openLabel = toggle.dataset.labelOpen ?? "Open menu";
+      const closeLabel = toggle.dataset.labelClose ?? "Close menu";
+      toggle.setAttribute("aria-label", open ? closeLabel : openLabel);
 
       if (open) {
         nav.removeAttribute("hidden");

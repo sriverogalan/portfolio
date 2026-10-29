@@ -1,12 +1,17 @@
 ---
-import { site } from "../../data/site";
+import { getSite } from "../../data/site";
 import SectionLabel from "../atoms/SectionLabel.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const site = getSite(lang);
+const t = useTranslations(lang);
 ---
 
 <section id="about" class="section-pad bg-surface/40" data-section-bg="soft">
   <div class="container-page">
     <div class="flex max-w-3xl flex-col gap-8">
-      <div data-reveal><SectionLabel index="04">About</SectionLabel></div>
+      <div data-reveal><SectionLabel index="05">{t("section.about.label")}</SectionLabel></div>
       <div class="flex flex-col gap-5">
         <p class="font-display text-headline text-balance leading-tight text-ink" data-reveal>
           {site.about[0]}

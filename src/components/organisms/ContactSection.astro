@@ -1,6 +1,6 @@
 ---
-import { site } from "../../data/site";
-import { socialLinks } from "../../data/links";
+import { getSite } from "../../data/site";
+import { getSocialLinks } from "../../data/links";
 import SectionLabel from "../atoms/SectionLabel.astro";
 import SplitTextReveal from "../motion/SplitTextReveal.astro";
 import Button from "../atoms/Button.astro";
@@ -8,6 +8,12 @@ import Icon from "../atoms/Icon.astro";
 import IconLink from "../atoms/IconLink.astro";
 import CTAGroup from "../molecules/CTAGroup.astro";
 import MagneticButton from "../molecules/MagneticButton.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const site = getSite(lang);
+const t = useTranslations(lang);
+const socialLinks = getSocialLinks(lang);
 
 const linkedInUrl = "https://linkedin.com/in/sergiriverogalan";
 ---
@@ -15,16 +21,16 @@ const linkedInUrl = "https://linkedin.com/in/sergiriverogalan";
 <section id="contact" class="section-pad" data-section-bg="default">
   <div class="container-page">
     <div class="flex flex-col items-center gap-8 text-center">
-      <div data-reveal><SectionLabel index="05">Contact</SectionLabel></div>
+      <div data-reveal><SectionLabel index="06">{t("section.contact.label")}</SectionLabel></div>
 
       <SplitTextReveal
         as="h2"
-        text="Let's build something worth shipping."
+        text={t("section.contact.title")}
         class="font-display text-display max-w-4xl text-balance text-ink"
       />
 
       <p class="max-w-xl text-lg leading-relaxed text-ink-soft" data-reveal>
-        Reach out by email or LinkedIn. Let's talk about what you're building.
+        {t("section.contact.description")}
       </p>
 
       <div data-reveal>

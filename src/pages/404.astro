@@ -2,16 +2,22 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/atoms/Button.astro";
 import Icon from "../components/atoms/Icon.astro";
-import { site } from "../data/site";
+import { getSite } from "../data/site";
+import { getLangFromUrl, useTranslations } from "../i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const site = getSite(lang);
+const t = useTranslations(lang);
+const homeHref = lang === "es" ? "/es/" : "/";
 ---
 
-<BaseLayout title={`Not found | ${site.shortName}`} description="Page not found.">
+<BaseLayout title={`${t("404.title")} | ${site.shortName}`} description={t("404.description")}>
   <main class="grid min-h-svh place-items-center">
     <div class="container-page flex flex-col items-center gap-6 text-center">
       <p class="font-display text-display text-ink">404</p>
-      <p class="max-w-md text-lg text-ink-soft">This page wandered off. Let's get you back.</p>
-      <Button href="/" variant="primary" size="lg">
-        Back home
+      <p class="max-w-md text-lg text-ink-soft">{t("404.body")}</p>
+      <Button href={homeHref} variant="primary" size="lg">
+        {t("404.cta")}
         <Icon name="arrow-right" size={18} />
       </Button>
     </div>

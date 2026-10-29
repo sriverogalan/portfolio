@@ -1,0 +1,56 @@
+---
+import { getProcessSteps } from "../../data/process";
+import SectionLabel from "../atoms/SectionLabel.astro";
+import AnimatedHeading from "../atoms/AnimatedHeading.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const steps = getProcessSteps(lang);
+---
+
+<section
+  id="process"
+  class="relative overflow-hidden bg-surface/40 py-[clamp(4.5rem,10vw,7.5rem)]"
+  data-section-bg="soft"
+>
+  <div class="container-page relative flex flex-col gap-12 md:gap-14">
+    <header class="flex max-w-2xl flex-col gap-4" data-reveal>
+      <SectionLabel index="02">{t("section.process.label")}</SectionLabel>
+      <AnimatedHeading
+        as="h2"
+        text={t("section.process.title")}
+        class="font-display text-headline text-balance text-ink"
+      />
+      <p class="max-w-lg text-base leading-relaxed text-ink-soft md:text-lg">
+        {t("section.process.description")}
+      </p>
+    </header>
+
+    <ol class="grid gap-10 md:grid-cols-2 md:gap-x-8 md:gap-y-12 lg:grid-cols-4 lg:gap-x-6">
+      {
+        steps.map((step, index) => (
+          <li
+            class="group grid grid-cols-[2.5rem_1fr] gap-x-4 md:grid-cols-1 md:gap-y-5"
+            data-reveal
+          >
+            <div class="flex md:mb-1">
+              <span class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-soft font-display text-xs font-semibold tabular-nums text-accent transition-colors duration-300 group-hover:bg-accent group-hover:text-white">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+            </div>
+
+            <div class="flex min-w-0 flex-col gap-2.5 pt-1.5 md:pt-0">
+              <h3 class="font-display text-[1.0625rem] leading-snug text-ink md:text-lg">
+                {step.title}
+              </h3>
+              <p class="text-sm leading-relaxed text-ink-soft">
+                {step.detail}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

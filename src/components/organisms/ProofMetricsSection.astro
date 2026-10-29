@@ -1,12 +1,17 @@
 ---
-import { metrics } from "../../data/metrics";
+import { getMetrics } from "../../data/metrics";
 import MetricStat from "../molecules/MetricStat.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const metrics = getMetrics(lang);
 ---
 
-<section aria-label="Impact metrics" class="border-y border-border bg-surface/60" data-section-bg="surface">
+<section aria-label={t("metrics.aria")} class="border-y border-border bg-surface/60" data-section-bg="surface">
   <div class="container-page py-14 md:py-20">
     <p class="mb-10 max-w-md text-sm uppercase tracking-[0.2em] text-ink-faint" data-reveal>
-      Measured impact across teams &amp; products
+      {t("metrics.label")}
     </p>
     <dl class="grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4">
       {metrics.map((metric) => <MetricStat metric={metric} />)}

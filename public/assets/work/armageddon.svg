@@ -9,6 +9,6 @@
   <circle cx="1340" cy="820" r="420" fill="#2563eb" opacity="0.08"/>
   <circle cx="240" cy="180" r="300" fill="#2563eb" opacity="0.06"/>
   <text x="120" y="500" font-family="Geist, Inter, system-ui, sans-serif" font-size="104" font-weight="600" fill="#0a0a0a" letter-spacing="-4">Armageddon</text>
-  <text x="124" y="580" font-family="Inter, system-ui, sans-serif" font-size="40" fill="#5c5c5c">Internal ERP · 15 modules</text>
+  <text x="124" y="580" font-family="Inter, system-ui, sans-serif" font-size="40" fill="#5c5c5c">Internal ERP ï¿½ 15 modules</text>
   <text x="124" y="900" font-family="Inter, system-ui, sans-serif" font-size="28" fill="#8a8a85" letter-spacing="6">PREVIEW</text>
 </svg>

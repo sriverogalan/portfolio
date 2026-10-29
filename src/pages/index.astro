@@ -1,9 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HomeTemplate from "../components/templates/HomeTemplate.astro";
-import { site } from "../data/site";
+import { getSite } from "../data/site";
+import { getLangFromUrl } from "../i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const siteInfo = getSite(lang);
 ---
 
-<BaseLayout title={`${site.shortName} | ${site.role}`} description={site.description}>
+<BaseLayout title={`${siteInfo.shortName} | ${siteInfo.role}`} description={siteInfo.description}>
   <HomeTemplate />
 </BaseLayout>

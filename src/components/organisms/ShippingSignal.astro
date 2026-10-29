@@ -1,0 +1,39 @@
+---
+import { getLangFromUrl, useTranslations } from "../../i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<aside
+  class="border-b border-border bg-ink text-surface"
+  aria-label={t("shipping.label")}
+>
+  <div class="container-page">
+    <a
+      href="#work"
+      class="group flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-3.5"
+      data-reveal
+    >
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <span class="relative flex size-2">
+          <span class="absolute inset-0 animate-ping rounded-full bg-accent opacity-60"></span>
+          <span class="relative size-2 rounded-full bg-accent"></span>
+        </span>
+        <span class="text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-surface/55">
+          {t("shipping.label")}
+        </span>
+        <span class="hidden text-surface/25 sm:inline" aria-hidden="true">·</span>
+        <span class="font-display text-sm font-medium tracking-tight text-surface sm:text-[0.9375rem]">
+          {t("shipping.product")}
+        </span>
+      </div>
+      <span class="flex items-center gap-2 text-sm text-surface/65 transition-colors duration-300 group-hover:text-surface">
+        {t("shipping.cta")}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-0.5">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </span>
+    </a>
+  </div>
+</aside>

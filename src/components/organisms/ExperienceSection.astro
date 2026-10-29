@@ -1,16 +1,21 @@
 ---
-import { experience } from "../../data/experience";
+import { getExperience } from "../../data/experience";
 import SectionHeader from "../molecules/SectionHeader.astro";
 import ExperienceItem from "../molecules/ExperienceItem.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/ui";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const experience = getExperience(lang);
 ---
 
 <section id="experience" class="section-pad bg-surface/40" data-section-bg="soft">
   <div class="container-page flex flex-col gap-14">
     <SectionHeader
-      index="02"
-      label="Experience"
-      title="A track record of shipping."
-      description="Six years across aviation, logistics, ERP and freelance product work."
+      index="03"
+      label={t("section.experience.label")}
+      title={t("section.experience.title")}
+      description={t("section.experience.description")}
     />
 
     <ol class="flex flex-col">

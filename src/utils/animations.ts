@@ -193,25 +193,34 @@ export function initInterface(): void {
   }
 
   const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]"));
-  const sections = navLinks
-    .map((link) => document.querySelector<HTMLElement>(link.getAttribute("href") ?? ""))
-    .filter((section): section is HTMLElement => Boolean(section));
+  const sectionByHref = new Map<string, HTMLElement>();
+  for (const link of navLinks) {
+    const href = link.getAttribute("href");
+    if (!href || sectionByHref.has(href)) continue;
+    const section = document.querySelector<HTMLElement>(href);
+    if (section) sectionByHref.set(href, section);
+  }
 
-  if (sections.length) {
+  const setActiveNav = (id: string) => {
+    navLinks.forEach((link) => {
+      link.toggleAttribute("data-active", link.getAttribute("href") === id);
+    });
+  };
+
+  if (sectionByHref.size) {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-          const id = `#${entry.target.id}`;
-          navLinks.forEach((link) => {
-            const active = link.getAttribute("href") === id;
-            link.toggleAttribute("data-active", active);
-          });
+          setActiveNav(`#${entry.target.id}`);
         });
       },
       { rootMargin: "-45% 0px -50% 0px" },
     );
-    sections.forEach((section) => observer.observe(section));
+    sectionByHref.forEach((section) => observer.observe(section));
+
+    // At the top, highlight the logo, not Work.
+    if (window.scrollY < 8) setActiveNav("#top");
   }
 }
 
